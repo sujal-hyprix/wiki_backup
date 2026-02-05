@@ -1,0 +1,851 @@
+<!--
+title: Untitled Page
+description: 
+published: true
+date: 2026-01-29T09:02:28.956Z
+tags: 
+editor: code
+dateCreated: 2026-01-29T08:51:14.163Z
+-->
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NASA/GSFC C Style Guide (SEL-94-003)</title>
+<style>
+    :root {
+        --primary-color: #0b3d91; /* NASA Blue */
+        --text-color: #222;
+        --bg-color: #ffffff;
+        --code-bg: #f4f4f4;
+        --border-color: #ddd;
+    }
+
+    body {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+        color: var(--text-color);
+        background-color: var(--bg-color);
+        margin: 0;
+        padding: 20px;
+        max-width: 1200px;
+        margin: auto;
+    }
+
+    /* Headings */
+    h1 { border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; margin-top: 2em; color: var(--primary-color); }
+    h2 { border-bottom: 1px solid var(--border-color); padding-bottom: 5px; margin-top: 1.5em; color: var(--primary-color); }
+    h3 { margin-top: 1.2em; font-weight: bold; color: #444; }
+    h4 { margin-top: 1em; font-style: italic; color: #555; }
+
+    /* TOC Styling */
+    .toc-container {
+        background-color: #f8f9fa;
+        border: 1px solid #ccc;
+        padding: 20px;
+        margin-bottom: 40px;
+        border-radius: 5px;
+        display: inline-block;
+        min-width: 50%;
+    }
+    .toc-title { font-weight: bold; font-size: 1.2em; margin-bottom: 10px; border-bottom: 1px solid #ccc; }
+    .toc-list, .toc-list ul { list-style-type: none; padding-left: 0; }
+    .toc-list ul { padding-left: 20px; }
+    .toc-list li { margin-bottom: 4px; }
+    .toc-list a { text-decoration: none; color: var(--primary-color); font-size: 0.95em; }
+    .toc-list a:hover { text-decoration: underline; color: #0056b3; }
+
+    /* Code and Pre */
+    pre {
+        background-color: var(--code-bg);
+        border: 1px solid var(--border-color);
+        padding: 15px;
+        overflow-x: auto;
+        font-family: "Consolas", "Monaco", monospace;
+        font-size: 0.9em;
+    }
+    code { font-family: monospace; background-color: var(--code-bg); padding: 2px 4px; }
+
+    /* Lists */
+    ul, ol { margin-bottom: 1em; padding-left: 40px; }
+    
+    /* Blockquotes */
+    blockquote {
+        border-left: 4px solid var(--primary-color);
+        margin: 1em 0;
+        padding-left: 15px;
+        color: #555;
+        font-style: italic;
+    }
+</style>
+</head>
+<body>
+
+<div style="text-align: center; margin-bottom: 40px;">
+    <h1>NASA/GSFC C STYLE GUIDE</h1>
+    <h3>Software Engineering Laboratory Series (SEL-94-003)</h3>
+    <p><strong>August 1994</strong></p>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc-container">
+    <div class="toc-title">Table of Contents</div>
+    <ul class="toc-list">
+        <li><a href="#s1">1. Introduction</a>
+            <ul>
+                <li><a href="#s1-1">1.1 Purpose</a></li>
+                <li><a href="#s1-2">1.2 Audience</a></li>
+                <li><a href="#s1-3">1.3 Approach</a></li>
+            </ul>
+        </li>
+        <li><a href="#s2">2. Readability and Maintainability</a>
+            <ul>
+                <li><a href="#s2-1">2.1 Encapsulation and Information Hiding</a></li>
+                <li><a href="#s2-2">2.2 White Space</a>
+                    <ul>
+                        <li><a href="#s2-2-1">2.2.1 Blank Lines</a></li>
+                        <li><a href="#s2-2-2">2.2.2 Spacing</a></li>
+                        <li><a href="#s2-2-3">2.2.3 Indentation</a></li>
+                    </ul>
+                </li>
+                <li><a href="#s2-3">2.3 Comments</a></li>
+                <li><a href="#s2-4">2.4 Meaningful Names</a>
+                    <ul>
+                        <li><a href="#s2-4-1">2.4.1 Standard Names</a></li>
+                        <li><a href="#s2-4-2">2.4.2 Variable Names</a></li>
+                        <li><a href="#s2-4-3">2.4.3 Capitalization</a></li>
+                        <li><a href="#s2-4-4">2.4.4 Type and Constant Names</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li><a href="#s3">3. Program Organization</a>
+            <ul>
+                <li><a href="#s3-1">3.1 Program Files</a></li>
+                <li><a href="#s3-2">3.2 README File</a></li>
+                <li><a href="#s3-3">3.3 Standard Libraries</a></li>
+                <li><a href="#s3-4">3.4 Header Files</a></li>
+                <li><a href="#s3-5">3.5 Module Files</a></li>
+                <li><a href="#s3-6">3.6 Makefiles</a></li>
+                <li><a href="#s3-7">3.7 Standard Filename Suffixes</a></li>
+            </ul>
+        </li>
+        <li><a href="#s4">4. File Organization</a>
+            <ul>
+                <li><a href="#s4-1">4.1 File Prolog</a></li>
+                <li><a href="#s4-2">4.2 Program Algorithm and PDL</a>
+                    <ul>
+                        <li><a href="#s4-2-1">4.2.1 Sequence Statements</a></li>
+                        <li><a href="#s4-2-2">4.2.2 Selection Control Statements</a></li>
+                        <li><a href="#s4-2-3">4.2.3 Iteration Control Statements</a></li>
+                        <li><a href="#s4-2-4">4.2.4 Severe Error and Exception Handling</a></li>
+                    </ul>
+                </li>
+                <li><a href="#s4-3">4.3 Include Directive</a></li>
+                <li><a href="#s4-4">4.4 Defines and Typedefs</a></li>
+                <li><a href="#s4-5">4.5 External Data Declarations</a></li>
+                <li><a href="#s4-6">4.6 Sequence of Functions</a></li>
+            </ul>
+        </li>
+        <li><a href="#s5">5. Function Organization</a>
+            <ul>
+                <li><a href="#s5-1">5.1 Function Prologs</a></li>
+                <li><a href="#s5-2">5.2 Function Arguments</a></li>
+                <li><a href="#s5-3">5.3 External Variable Declarations</a></li>
+                <li><a href="#s5-4">5.4 Internal Variable Declarations</a></li>
+                <li><a href="#s5-5">5.5 Statement Paragraphing</a></li>
+                <li><a href="#s5-6">5.6 Return Statement</a></li>
+            </ul>
+        </li>
+        <li><a href="#s6">6. Data Types, Operators, and Expressions</a>
+            <ul>
+                <li><a href="#s6-1">6.1 Variables</a></li>
+                <li><a href="#s6-2">6.2 Constants</a>
+                    <ul>
+                        <li><a href="#s6-2-1">6.2.1 Const Modifier</a></li>
+                        <li><a href="#s6-2-2">6.2.2 #define Command</a></li>
+                        <li><a href="#s6-2-3">6.2.3 Enumeration Types</a></li>
+                        <li><a href="#s6-2-4">6.2.4 Simple Constants</a></li>
+                    </ul>
+                </li>
+                <li><a href="#s6-3">6.3 Variable Definitions and Declarations</a>
+                    <ul>
+                        <li><a href="#s6-3-1">6.3.1 Numbers</a></li>
+                        <li><a href="#s6-3-2">6.3.2 Qualifiers</a></li>
+                        <li><a href="#s6-3-3">6.3.3 Structures</a></li>
+                        <li><a href="#s6-3-4">6.3.4 Automatic Variables</a></li>
+                    </ul>
+                </li>
+                <li><a href="#s6-4">6.4 Type Conversions and Casts</a></li>
+                <li><a href="#s6-5">6.5 Pointer Types</a></li>
+                <li><a href="#s6-6">6.6 Pointer Conversions</a></li>
+                <li><a href="#s6-7">6.7 Operator Formatting</a></li>
+                <li><a href="#s6-8">6.8 Assignment Operators</a></li>
+                <li><a href="#s6-9">6.9 Conditional Expressions</a></li>
+                <li><a href="#s6-10">6.10 Precedence and Order of Evaluation</a></li>
+            </ul>
+        </li>
+        <li><a href="#s7">7. Statements and Control Flow</a>
+            <ul>
+                <li><a href="#s7-1">7.1 Sequence Statements</a>
+                    <ul>
+                        <li><a href="#s7-1-1">7.1.1 Statement Placement</a></li>
+                        <li><a href="#s7-1-2">7.1.2 Braces</a></li>
+                    </ul>
+                </li>
+                <li><a href="#s7-2">7.2 Selection Control Statements</a>
+                    <ul>
+                        <li><a href="#s7-2-1">7.2.1 If</a></li>
+                        <li><a href="#s7-2-2">7.2.2 If Else</a></li>
+                        <li><a href="#s7-2-3">7.2.3 Else If</a></li>
+                        <li><a href="#s7-2-4">7.2.4 Nested If Statements</a></li>
+                        <li><a href="#s7-2-5">7.2.5 Switch</a></li>
+                    </ul>
+                </li>
+                <li><a href="#s7-3">7.3 Iteration Control Statements</a>
+                    <ul>
+                        <li><a href="#s7-3-1">7.3.1 While</a></li>
+                        <li><a href="#s7-3-2">7.3.2 For</a></li>
+                        <li><a href="#s7-3-3">7.3.3 Do While</a></li>
+                    </ul>
+                </li>
+                <li><a href="#s7-4">7.4 Severe Error and Exception Handling</a>
+                    <ul>
+                        <li><a href="#s7-4-1">7.4.1 Gotos and Labels</a></li>
+                        <li><a href="#s7-4-2">7.4.2 Break</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li><a href="#s8">8. Portability and Performance</a>
+            <ul>
+                <li><a href="#s8-1">8.1 Guidelines for Portability</a></li>
+                <li><a href="#s8-2">8.2 Guidelines for Performance</a></li>
+            </ul>
+        </li>
+        <li><a href="#s9">9. C Code Examples</a>
+            <ul>
+                <li><a href="#s9-1">9.1 Makefile</a></li>
+                <li><a href="#s9-2">9.2 C Program File</a></li>
+                <li><a href="#s9-3">9.3 Include File</a></li>
+            </ul>
+        </li>
+    </ul>
+</div>
+
+<hr>
+
+<h1 id="s1">1. Introduction</h1>
+<blockquote>"Good programming style begins with the effective organization of code." — Steve Oualline</blockquote>
+
+<h2 id="s1-1">1.1 Purpose</h2>
+<p>This document describes the Software Engineering Laboratory (SEL) recommended style for writing C programs. Good style is defined as code that is organized, easy to read, easy to understand, maintainable, and efficient.</p>
+
+<h2 id="s1-2">1.2 Audience</h2>
+<p>Written for programmers in the SEL environment, focusing on good practices that enhance code effectiveness.</p>
+
+<h2 id="s1-3">1.3 Approach</h2>
+<p>Provides guidelines for organizing content, structure, and placement of variables, statements, and comments.</p>
+
+<hr>
+
+<h1 id="s2">2. Readability and Maintainability</h1>
+
+<h2 id="s2-1">2.1 Encapsulation and Information Hiding</h2>
+<p><strong>Encapsulation</strong> groups related elements (e.g., using header files for cohesive ideas). <strong>Information hiding</strong> controls visibility (scope).</p>
+<ul>
+    <li>Use <code>static</code> for external definitions used only in the current file.</li>
+    <li>Use <code>extern</code> only as needed in individual functions.</li>
+</ul>
+
+<h2 id="s2-2">2.2 White Space</h2>
+<h3 id="s2-2-1">2.2.1 Blank Lines</h3>
+<p>Use a single blank line to separate code "paragraphs" (logical sequences).</p>
+
+<h3 id="s2-2-2">2.2.2 Spacing</h3>
+<p>Put one space after a comma. Put spaces around binary operators (e.g., <code>total / count</code>).</p>
+
+<h3 id="s2-2-3">2.2.3 Indentation</h3>
+<p>Use <strong>four spaces</strong> for indentation. Avoid tabs if possible.</p>
+
+<h2 id="s2-3">2.3 Comments</h2>
+<p>Do not paraphrase code. Use boxed comments for prologs, block comments for narratives, and inline comments for definitions.</p>
+
+<h2 id="s2-4">2.4 Meaningful Names</h2>
+<p>Names should be precise and consistent. Avoid misleading abbreviations. Names longer than 4 characters should differ by at least 2 characters.</p>
+
+<h3 id="s2-4-1">2.4.1 Standard Names</h3>
+<p>Acceptable short names: <code>c</code> (chars), <code>i,j,k</code> (indices), <code>p,q</code> (pointers), <code>s</code> (strings).</p>
+
+<h3 id="s2-4-2">2.4.2 Variable Names</h3>
+<p>Avoid hidden variables (shadowing global names with local ones).</p>
+
+<h3 id="s2-4-3">2.4.3 Capitalization</h3>
+<ul>
+    <li><strong>Variables:</strong> lower_case_with_underscores.</li>
+    <li><strong>Functions:</strong> CapitalizedWords (no underscores).</li>
+    <li><strong>Constants:</strong> UPPER_CASE_WITH_UNDERSCORES.</li>
+</ul>
+
+<h3 id="s2-4-4">2.4.4 Type and Constant Names</h3>
+<p>Typedefs follow global variable naming; Enums follow constant naming.</p>
+
+<hr>
+
+<h1 id="s3">3. Program Organization</h1>
+
+<h2 id="s3-1">3.1 Program Files</h2>
+<p>Contains the `main()` function acting as the driver.</p>
+
+<h2 id="s3-2">3.2 README File</h2>
+<p>Explains what the program does, dependencies, and compilation flags.</p>
+
+<h2 id="s3-3">3.3 Standard Libraries</h2>
+<p>Include only necessary libraries.</p>
+
+<h2 id="s3-4">3.4 Header Files</h2>
+<p>Encapsulate logically related ideas. Do not nest header files (explicitly include dependencies in .c files).</p>
+
+<h2 id="s3-5">3.5 Module Files</h2>
+<p>Logically related functions/data without `main()`.</p>
+
+<h2 id="s3-6">3.6 Makefiles</h2>
+<p>List all files and dependencies for efficient recompilation.</p>
+
+<h2 id="s3-7">3.7 Standard Filename Suffixes</h2>
+<p><code>.c</code> (source), <code>.h</code> (header), <code>.o</code> (object), <code>.mak</code> (makefile).</p>
+
+<hr>
+
+<h1 id="s4">4. File Organization</h1>
+<p><strong>Standard Order:</strong> Prolog, Includes, Defines/Typedefs, External Data, Functions.</p>
+
+<h2 id="s4-1">4.1 File Prolog</h2>
+<p>Must include: File Name, Purpose, References, External Variables, Error Messages, History, and Algorithm (PDL).</p>
+
+<h2 id="s4-2">4.2 Program Algorithm and PDL</h2>
+<p>Describes processing logic using imperative English and control structures.</p>
+
+<h3 id="s4-2-1">4.2.1 Sequence Statements</h3>
+<p>Declarative sentences (Verb + Object).</p>
+
+<h3 id="s4-2-2">4.2.2 Selection Control Statements</h3>
+<p><code>IF THEN ELSE</code>, <code>IF THEN</code>, and <code>CASE</code> structures.</p>
+
+<h3 id="s4-2-3">4.2.3 Iteration Control Statements</h3>
+<p><code>DO WHILE</code>, <code>DO FOR</code>, <code>DO UNTIL</code>.</p>
+
+<h3 id="s4-2-4">4.2.4 Severe Error and Exception Handling</h3>
+<p><code>ABORT to (label)</code> and <code>UNDO</code> (breaks loop).</p>
+
+<h2 id="s4-3">4.3 Include Directive</h2>
+<p>Order: <code>&lt;stdio.h&gt;</code>, system headers, "user headers".</p>
+
+<h2 id="s4-4">4.4 Defines and Typedefs</h2>
+<p>Sequence: Enums, Typedefs, Constant macros, Function macros.</p>
+
+<h2 id="s4-5">4.5 External Data Declarations</h2>
+<p>Sequence: Externs from other files, Non-static globals, Static globals.</p>
+
+<h2 id="s4-6">4.6 Sequence of Functions</h2>
+<p><code>main()</code> first. Breadth-first order preferred. Separate functions with a row of asterisks.</p>
+
+<hr>
+
+<h1 id="s5">5. Function Organization</h1>
+
+<h2 id="s5-1">5.1 Function Prologs</h2>
+<p>Includes Name, Arguments (Type, I/O, Description), and Return value.</p>
+
+<h2 id="s5-2">5.2 Function Arguments</h2>
+<p>Declared when defined, beginning in column 1.</p>
+
+<h2 id="s5-3">5.3 External Variable Declarations</h2>
+<p>Declared immediately after the opening brace.</p>
+
+<h2 id="s5-4">5.4 Internal Variable Declarations</h2>
+<p>Defined after external variables. Align names. One per line with comment.</p>
+
+<h2 id="s5-5">5.5 Statement Paragraphing</h2>
+<p>Use blank lines to group related statements.</p>
+
+<h2 id="s5-6">5.6 Return Statement</h2>
+<p>Prefer single return at end. Always declare return type (void if none). Parenthesize return expression.</p>
+
+<hr>
+
+<h1 id="s6">6. Data Types, Operators, and Expressions</h1>
+
+<h2 id="s6-1">6.1 Variables</h2>
+<p>Define one per line with comment. Group related variables.</p>
+
+<h2 id="s6-2">6.2 Constants</h2>
+<h3 id="s6-2-1">6.2.1 Const Modifier</h3>
+<p>Preferred for simple constants to allow type checking.</p>
+
+<h3 id="s6-2-2">6.2.2 #define Command</h3>
+<p>Avoid for numbers (use const). Use for tokens.</p>
+
+<h3 id="s6-2-3">6.2.3 Enumeration Types</h3>
+<p>Use for associated constant names/values.</p>
+
+<h3 id="s6-2-4">6.2.4 Simple Constants</h3>
+<p>Use `const` instead of `#define` where possible.</p>
+
+<h2 id="s6-3">6.3 Variable Definitions and Declarations</h2>
+<h3 id="s6-3-1">6.3.1 Numbers</h3>
+<p>Float: digits on both sides (0.5). Hex: 0x, uppercase A-F. Long: 123L.</p>
+
+<h3 id="s6-3-2">6.3.2 Qualifiers</h3>
+<p>Always associate qualifiers (short, long, unsigned) with basic types.</p>
+
+<h3 id="s6-3-3">6.3.3 Structures</h3>
+<p>Use <code>typedef</code> to define structures.</p>
+
+<h3 id="s6-3-4">6.3.4 Automatic Variables</h3>
+<p>Initialize where declared if used nearby (within a page).</p>
+
+<h2 id="s6-4">6.4 Type Conversions and Casts</h2>
+<p>Use explicit casts rather than implicit conversions.</p>
+
+<h2 id="s6-5">6.5 Pointer Types</h2>
+<p>Put the `*` with the variable name, not the type (e.g., `char *s;`).</p>
+
+<h2 id="s6-6">6.6 Pointer Conversions</h2>
+<p>Avoid, except for NULL, allocation, or specific byte-ordering needs.</p>
+
+<h2 id="s6-7">6.7 Operator Formatting</h2>
+<p>Spaces around binary operators. No space around `->`, `.`, `[]`.</p>
+
+<h2 id="s6-8">6.8 Assignment Operators</h2>
+<p>Avoid side-effect operators in relational expressions.</p>
+
+<h2 id="s6-9">6.9 Conditional Expressions</h2>
+<p>Use `? :` only if readable. Do not use for complex logic.</p>
+
+<h2 id="s6-10">6.10 Precedence and Order of Evaluation</h2>
+<p>Use parentheses liberally. Remember `* % /` before `+ -`.</p>
+
+<hr>
+
+<h1 id="s7">7. Statements and Control Flow</h1>
+
+<h2 id="s7-1">7.1 Sequence Statements</h2>
+<h3 id="s7-1-1">7.1.1 Statement Placement</h3>
+<p>One statement per line.</p>
+<h3 id="s7-1-2">7.1.2 Braces</h3>
+<p>Use <strong>Braces-Stand-Alone</strong> style (braces on separate lines, aligned). Use braces even for single statements.</p>
+
+<h2 id="s7-2">7.2 Selection Control Statements</h2>
+<h3 id="s7-2-1">7.2.1 If</h3>
+<p>Indent single statements one level.</p>
+<h3 id="s7-2-2">7.2.2 If Else</h3>
+<p>Indent blocks. Use braces for compound bodies.</p>
+<h3 id="s7-2-3">7.2.3 Else If</h3>
+<p>Use the standard `else if` format for multi-way decisions.</p>
+<h3 id="s7-2-4">7.2.4 Nested If Statements</h3>
+<p>Use braces to force association of `else` with the correct `if`.</p>
+<h3 id="s7-2-5">7.2.5 Switch</h3>
+<p>Indent cases. Always include `default`. Comment fall-throughs.</p>
+
+<h2 id="s7-3">7.3 Iteration Control Statements</h2>
+<h3 id="s7-3-1">7.3.1 While</h3>
+<p>Format with braces on separate lines.</p>
+<h3 id="s7-3-2">7.3.2 For</h3>
+<p>Split into multiple lines if too long.</p>
+<h3 id="s7-3-3">7.3.3 Do While</h3>
+<p>Place `while` on the same line as closing brace or new line (consistent style).</p>
+
+<h2 id="s7-4">7.4 Severe Error and Exception Handling</h2>
+<h3 id="s7-4-1">7.4.1 Gotos and Labels</h3>
+<p>Use very sparingly. Only for breaking out of deep nesting.</p>
+<h3 id="s7-4-2">7.4.2 Break</h3>
+<p>Use to exit loops at logical breaking points.</p>
+
+<hr>
+
+<h1 id="s8">8. Portability and Performance</h1>
+
+<h2 id="s8-1">8.1 Guidelines for Portability</h2>
+<p>Use ANSI C. Do not assume word sizes (use `sizeof` or typedefs like `int32`). Isolate machine-dependent code.</p>
+
+<h2 id="s8-2">8.2 Guidelines for Performance</h2>
+<p>Write readable code first. Optimize only when necessary. Pass structures by pointer. Minimize I/O.</p>
+
+<hr>
+
+<h1 id="s9">9. C Code Examples</h1>
+
+<h2 id="s9-1">9.1 Makefile</h2>
+<pre><code>INIT_OBJS = oi_seq_init.o oi_seq_drv_1.ofor (i = 0; i < n; i++)
+394
+{
+395
+    process(i);
+396
+}</code></pre>
+397
+​
+398
+    <h2 id="7.2">7.2 Selection Control</h2>
+399
+    <ul>
+400
+        <li><strong>If/Else:</strong> Indent blocks. Use <code>else if</code> format.</li>
+401
+        <li><strong>Switch:</strong> Always include a <code>default</code> case. Comment fall-throughs.</li>
+402
+    </ul>
+403
+​
+404
+    <h2 id="7.4">7.4 Error Handling</h2>
+405
+    <ul>
+406
+        <li><strong>Gotos:</strong> Use very sparingly (only for breaking out of deep nesting on error).</li>
+407
+        <li><strong>Break:</strong> Avoid if possible, but acceptable for logical breaking points.</li>
+408
+    </ul>
+409
+​
+410
+    <hr>
+411
+​
+412
+    <h1 id="8">8. Portability and Performance</h1>
+413
+​
+414
+    <h2 id="8.1">8.1 Portability</h2>
+415
+    <ul>
+416
+        <li>Use <strong>ANSI C</strong>.</li>
+417
+        <li>Do not assume word sizes (use <code>sizeof</code> or typedefs like <code>int32</code>).</li>
+418
+        <li>Isolate machine-dependent code in separate files.</li>
+419
+    </ul>
+420
+​
+421
+    <h2 id="8.2">8.2 Performance</h2>
+422
+    <ul>
+423
+        <li>Write readable code first; optimize only when necessary.</li>
+424
+        <li>Pass structures by pointer to save stack space.</li>
+425
+        <li>Minimize I/O operations and open/close calls.</li>
+426
+    </ul>
+427
+​
+428
+    <hr>
+429
+​
+430
+    <h1 id="9">9. C Code Examples</h1>
+431
+​
+432
+    <h2 id="9.1">9.1 Makefile Example</h2>
+433
+    <pre><code># Makefile for UIX Testing
+434
+# This makefile can build 8 different executables.
+435
+# They share some of the same code and share libraries.
+436
+​
+437
+INIT_OBJS = oi_seq_init.o oi_seq_drv_1.o
+438
+​
+439
+GEN_SCREEN_OBJS = oi_seq_gen_screen_PRIVATE.o \
+440
+                  oi_seq_drv_1.o \
+441
+                  oi_seq_resize_pane.o \
+442
+                  oi_seq_init.o
+443
+​
+444
+# Compilation for the executables...
+445
+test_init: $(INIT_OBJS) $(OBJS)
+446
+    $(CC) -o test_init $(INIT_OBJS) $(OBJS) $(UIXLIBDIR) \
+447
+    $(NCSS_LIBS) $(UIX_LIBS) $(XLIBS)
+448
+​
+449
+clean:
+450
+    /bin/rm $(INIT_OBJS) $(OBJS)</code></pre>
+451
+​
+452
+    <h2 id="9.2">9.2 C Program File Example</h2>
+453
+    <pre><code>/*************************************************************************
+454
+*
+455
+* FILE NAME: RF_GetReference.c
+456
+*
+457
+* PURPOSE: This function determines if a requested reference
+458
+*          vector is in need of update. It uses analytic routines
+459
+*          to update vectors.
+460
+*
+461
+* EXTERNAL VARIABLES:
+462
+*    Source: HD_reference.h
+463
+*    Name              Type        IO    Description
+464
+*    ephem_file_lu     long        I     FORTRAN logical unit number
+465
+*    keplerian         double   I     Keplerian orbital elements
+466
+*
+467
+* DEVELOPMENT HISTORY:
+468
+*    Date        Author          Change Id   Release   Description
+469
+*    09-16-93    J. Programmer       -          1      Prolog and PDL
+470
+*    10-25-93    J. Programmer       -          1      Coded
+471
+*
+472
+*************************************************************************/
+473
+​
+474
+#include "HD_debug.h"
+475
+#include "HD_reference.h"
+476
+​
+477
+/* Function Prototypes */
+478
+void c_calpvs(double, long, double *, double, double, long, 
+479
+              double *, double *, long *);
+480
+​
+481
+/* Function Prolog */
+482
+/************************************************************************
+483
+*
+484
+* FUNCTION NAME: GetReference
+485
+*
+486
+* ARGUMENTS:
+487
+*    Argument      Type      IO    Description
+488
+*    ref_type      int       I     Type of reference data requested
+489
+*                                  1 = S/C position vector
+490
+*    t_request     double    I     Time of requested reference
+491
+*    ref_vector    double O     Requested reference vector
+492
+*
+493
+* RETURNS: void
+494
+*
+495
+*************************************************************************/
+496
+​
+497
+void GetReference(int ref_type, double t_request, double t_wait, 
+498
+                  double ref_vector)
+499
+{
+500
+    /* LOCAL VARIABLES: */
+501
+    double  caldate;          /* Epoch time in calendar format */
+502
+    long    ierr = -100;      /* Return code from RSL routines */
+503
+    int     i;                /* Loop counter */
+504
+​
+505
+    /* Initialize local parameters */
+506
+    if (debug_level[RF] > TRACE)
+507
+    {
+508
+        fprintf(debug_file_handle, "ENTER GetReference\n");
+509
+    }
+510
+​
+511
+    /* Main Algorithm Implementation */
+512
+    switch (ref_type)
+513
+    {
+514
+        case 1:
+515
+        case 2:
+516
+            /* Check if update is needed based on time delta */
+517
+            if ((t_request - t_rv_ref) > t_wait)
+518
+            {
+519
+                 /* Call analytic update routine */
+520
+                 c_calpvs(eptime, m, keplerian, t, ttol, maxit, 
+521
+                          s_c_pos, s_c_vel, &ierr);
+522
+                 
+523
+                 /* Update reference time */
+524
+                 t_rv_ref = t_request;
+525
+            }
+526
+            
+527
+            /* Copy Result */
+528
+            if (ref_type == 1)
+529
+            {
+530
+                for (i=0; i&lt;3; i++)
+531
+                {
+532
+                    ref_vector[i] = s_c_pos[i];
+533
+                }
+534
+            }
+535
+            break;
+536
+​
+537
+        default:
+538
+            fprintf(debug_file_handle, "Unknown Reference Type\n");
+539
+            break;
+540
+    }
+541
+}</code></pre>
+542
+​
+543
+    <h2 id="9.3">9.3 Header File Example</h2>
+544
+    <pre><code>/*************************************************************************
+545
+*
+546
+* FILE NAME: HD_reference.h
+547
+*
+548
+* PURPOSE: Defines all reference data variables.
+549
+*
+550
+*************************************************************************/
+551
+​
+552
+#ifndef HD_REFERENCE_H
+553
+#define HD_REFERENCE_H
+554
+​
+555
+/* Constants */
+556
+#define MU_E     398600.8   /* Earth gravitational constant */
+557
+#define NUMPTS   4          /* Points used by interpolator */
+558
+​
+559
+/* External Variables */
+560
+extern long      ephem_file_lu;
+561
+extern double    e_pos;
+562
+extern double    keplerian;
+563
+extern double    s_c_pos;
+564
+extern double    s_c_vel;
+565
+​
+566
+#endif</code></pre>
+567
+​
+568
+</article>
+569
+​
+570
+</body>
+571
+</html>
+572
+```
+test_init: $(INIT_OBJS) $(OBJS)
+    $(CC) -o test_init $(INIT_OBJS) $(OBJS) $(UIXLIBDIR) ...</code></pre>
+
+<h2 id="s9-2">9.2 C Program File</h2>
+<p>Example: <code>RF_GetReference.c</code> showing file prolog, function prolog, and switch/case formatting.</p>
+
+<h2 id="s9-3">9.3 Include File</h2>
+<p>Example: <code>HD_reference.h</code> showing defines, externs, and structure typedefs.</p>
+
+</body>
+</html>
+```

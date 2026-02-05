@@ -1,0 +1,302 @@
+<!--
+title: interview_hardware
+description: 
+published: true
+date: 2026-01-29T10:35:01.258Z
+tags: 
+editor: code
+dateCreated: 2026-01-29T10:28:38.348Z
+-->
+
+<style>
+  .rubric {
+    font-family: Inter, Segoe UI, Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.45;
+    color: #1f2933;
+    max-width: 1200px;
+  }
+
+  .rubric h1 {
+    font-size: 22px;
+    margin-bottom: 4px;
+  }
+
+  .rubric h2 {
+    font-size: 16px;
+    margin-top: 28px;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 4px;
+  }
+
+  .rubric h3 {
+    font-size: 14px;
+    margin-top: 16px;
+    color: #374151;
+  }
+
+  .rubric table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+  }
+
+  .rubric th {
+    background: #f8fafc;
+    font-weight: 600;
+    font-size: 12px;
+    text-align: left;
+    padding: 6px;
+    border: 1px solid #e5e7eb;
+  }
+
+  .rubric td {
+    border: 1px solid #e5e7eb;
+    padding: 6px;
+    vertical-align: top;
+  }
+
+  .rubric input,
+  .rubric textarea,
+  .rubric select {
+    font-size: 12px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .rubric textarea {
+    resize: vertical;
+  }
+
+  .meta-table td {
+    border: none;
+    padding: 4px 6px;
+  }
+
+  .section-note {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 4px;
+  }
+
+  .score {
+    width: 60px;
+  }
+</style>
+
+<div class="rubric">
+
+<h1>Firmware–Hardware Interface Interview Rubric</h1>
+<div class="section-note">
+Focus: hardware-aware firmware, bring-up discipline, fault tolerance, safety mindset
+</div>
+
+---
+
+<h2>Candidate Information</h2>
+<table class="meta-table">
+  <tr>
+    <td><b>Candidate</b></td>
+    <td><input type="text"></td>
+    <td><b>Date</b></td>
+    <td><input type="date"></td>
+  </tr>
+  <tr>
+    <td><b>Interviewer(s)</b></td>
+    <td colspan="3"><input type="text"></td>
+  </tr>
+</table>
+
+---
+
+<h2>1. Power, Reset & Startup Behavior (20%)</h2>
+<div class="section-note">Evaluates understanding of electrical realities during boot.</div>
+
+<table>
+  <tr>
+    <th>Sub-Criterion</th>
+    <th class="score">Score</th>
+    <th>Evidence / Notes</th>
+  </tr>
+  <tr>
+    <td>Reset source differentiation (POR / BOR / WDT)</td>
+    <td><input class="score" type="number" min="1" max="5"></td>
+    <td><textarea rows="2"></textarea></td>
+  </tr>
+  <tr>
+    <td>Power ramp & brown-out behavior handling</td>
+    <td><input class="score" type="number" min="1" max="5"></td>
+    <td><textarea rows="2"></textarea></td>
+  </tr>
+  <tr>
+    <td>Startup sequencing (clocks → power → peripherals)</td>
+    <td><input class="score" type="number" min="1" max="5"></td>
+    <td><textarea rows="2"></textarea></td>
+  </tr>
+  <tr>
+    <td>Safe behavior after abnormal reset</td>
+    <td><input class="score" type="number" min="1" max="5"></td>
+    <td><textarea rows="2"></textarea></td>
+  </tr>
+</table>
+
+---
+
+<h2>2. Clocks, Timing & Determinism (15%)</h2>
+
+<table>
+  <tr>
+    <th>Sub-Criterion</th>
+    <th class="score">Score</th>
+    <th>Evidence / Notes</th>
+  </tr>
+  <tr>
+    <td>Clock source selection & PLL lock awareness</td>
+    <td><input class="score" type="number" min="1" max="5"></td>
+    <td><textarea rows="2"></textarea></td>
+  </tr>
+  <tr>
+    <td>Safe clock switching & fallback strategy</td>
+    <td><input class="score" type="number" min="1" max="5"></td>
+    <td><textarea rows="2"></textarea></td>
+  </tr>
+  <tr>
+    <td>Timing impact on ADC / UART / SPI</td>
+    <td><input class="score" type="number" min="1" max="5"></td>
+    <td><textarea rows="2"></textarea></td>
+  </tr>
+</table>
+
+---
+
+<h2>3. GPIO, Interrupts & Electrical Noise (15%)</h2>
+
+<table>
+  <tr>
+    <th>Sub-Criterion</th>
+    <th class="score">Score</th>
+    <th>Evidence / Notes</th>
+  </tr>
+  <tr>
+    <td>Pull-up/down strategy & floating pin awareness</td>
+    <td><input class="score" type="number" min="1" max="5"></td>
+    <td><textarea rows="2"></textarea></td>
+  </tr>
+  <tr>
+    <td>Interrupt noise, debounce & filtering</td>
+    <td><input class="score" type="number" min="1" max="5"></td>
+    <td><textarea rows="2"></textarea></td>
+  </tr>
+  <tr>
+    <td>Correct ISR design & latency awareness</td>
+    <td><input class="score" type="number" min="1" max="5"></td>
+    <td><textarea rows="2"></textarea></td>
+  </tr>
+</table>
+
+---
+
+<h2>4. Analog Awareness (ADC / Sensors) (15%)</h2>
+
+<table>
+  <tr>
+    <th>Sub-Criterion</th>
+    <th class="score">Score</th>
+    <th>Evidence / Notes</th>
+  </tr>
+  <tr>
+    <td>Sampling time vs source impedance awareness</td>
+    <td><input class="score" type="number" min="1" max="5"></td>
+    <td><textarea rows="2"></textarea></td>
+  </tr>
+  <tr>
+    <td>Noise mitigation (oversampling, sync)</td>
+    <td><input class="score" type="number" min="1" max="5"></td>
+    <td><textarea rows="2"></textarea></td>
+  </tr>
+  <tr>
+    <td>Calibration & reference stability handling</td>
+    <td><input class="score" type="number" min="1" max="5"></td>
+    <td><textarea rows="2"></textarea></td>
+  </tr>
+</table>
+
+---
+
+<h2>5. Communication Buses & Signal Integrity (15%)</h2>
+
+<table>
+  <tr>
+    <th>Sub-Criterion</th>
+    <th class="score">Score</th>
+    <th>Evidence / Notes</th>
+  </tr>
+  <tr>
+    <td>Timeouts, CRCs & bus error handling</td>
+    <td><input class="score" type="number" min="1" max="5"></td>
+    <td><textarea rows="2"></textarea></td>
+  </tr>
+  <tr>
+    <td>Debug approach for SI-related failures</td>
+    <td><input class="score" type="number" min="1" max="5"></td>
+    <td><textarea rows="2"></textarea></td>
+  </tr>
+</table>
+
+---
+
+<h2>6. Fault Handling & Safe States (20%)</h2>
+
+<table>
+  <tr>
+    <th>Sub-Criterion</th>
+    <th class="score">Score</th>
+    <th>Evidence / Notes</th>
+  </tr>
+  <tr>
+    <td>Watchdog strategy & limitations</td>
+    <td><input class="score" type="number" min="1" max="5"></td>
+    <td><textarea rows="2"></textarea></td>
+  </tr>
+  <tr>
+    <td>Fault classification (recoverable vs fatal)</td>
+    <td><input class="score" type="number" min="1" max="5"></td>
+    <td><textarea rows="2"></textarea></td>
+  </tr>
+  <tr>
+    <td>Deterministic safe-state behavior</td>
+    <td><input class="score" type="number" min="1" max="5"></td>
+    <td><textarea rows="2"></textarea></td>
+  </tr>
+  <tr>
+    <td>Persistent fault logging & reset awareness</td>
+    <td><input class="score" type="number" min="1" max="5"></td>
+    <td><textarea rows="2"></textarea></td>
+  </tr>
+</table>
+
+---
+
+<h2>Final Assessment</h2>
+<table>
+  <tr>
+    <th>Overall Score (/5)</th>
+    <th>Decision</th>
+  </tr>
+  <tr>
+    <td><input type="number" step="0.1"></td>
+    <td>
+      <select>
+        <option>Strong Hire</option>
+        <option>Hire</option>
+        <option>Conditional Hire</option>
+        <option>No Hire</option>
+      </select>
+    </td>
+  </tr>
+</table>
+
+<h3>Overall Interviewer Notes</h3>
+<textarea rows="4"></textarea>
+
+</div>
